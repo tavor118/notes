@@ -1,0 +1,15 @@
+job
+friends
+work
+interesting
+science
+programming
+computer technology
+family
+children
+learning
+languages
+python
+animals
+country
+city
