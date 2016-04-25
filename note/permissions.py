@@ -16,8 +16,6 @@ class IsOwnerOrDelegated(permissions.BasePermission):
         return obj.owner == request.user
 
 
-# class AttachEditPermissions
-
 DELEGATED_METHODS_EXCLUDE = ['DELETE']
 
 

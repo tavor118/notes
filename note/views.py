@@ -1,10 +1,8 @@
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from django.db.models import Q
-from rest_framework import viewsets, status, generics, mixins, permissions
+from rest_framework import viewsets, mixins, permissions
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.decorators import detail_route, list_route, permission_classes
 from rest_framework.response import Response
-from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope, TokenHasScope
 from note import serializers
 from note.models import Colors, Labels, Categories, Note, Attachments
 from note.permissions import CustomNotesPermissions, OwnerPermissions
@@ -92,8 +90,8 @@ class NoteViewSet(viewsets.ModelViewSet):
 
     method GET returns a users notes list including delegated notes to him.
     Returns:
-         { "id", "title", "content", "color", "category", "label", "owner", "delegated",
-    "file", "labels", "files", "users"}
+        "results":[  { "id", "title", "content", "color", "category", "label", "owner", "delegated",
+    "file", "labels", "files", "users"}, ...]
 
      method POST is for creating a new note.
     Params for a new note (method POST):
@@ -150,13 +148,43 @@ class NoteViewSet(viewsets.ModelViewSet):
         serializer.save(owner=self.request.user)
 
 
-class LabelViewSet(viewsets.ModelViewSet):
+class LabelViewSet(mixins.CreateModelMixin,
+                   mixins.RetrieveModelMixin,
+                   mixins.UpdateModelMixin,
+                   mixins.ListModelMixin,
+                   viewsets.GenericViewSet):
+    """
+    Endpoints for labels
+
+    1.
+
+        /labels.json
+        /labels/?format=json
+
+    GET method returns a list of hierarchical data of categories
+    GET returns label ... "results":[ { "id": "id", "title": "value"}, ...]
+    POST method for creating a new category. Accepts two parameters:
+
+        "title" - labels name (required)
+
+    2.
+
+        /categories/{id}.json
+        /categories/{id}/?format=json
+
+    GET method returns label ... "results": { "id": "id", "title": "value"}.
+    PUT method for creating accepts the same parameters as GET.
+    """
     queryset = Labels.objects.all()
     serializer_class = serializers.LabelsSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(mixins.CreateModelMixin,
+                      mixins.RetrieveModelMixin,
+                      mixins.UpdateModelMixin,
+                      mixins.ListModelMixin,
+                      viewsets.GenericViewSet):
     """
     Endpoint for categories.
 
@@ -178,7 +206,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
     GET method returns category { "id": "id", "title": "value", "parent": "parent category id or null"}.
     PUT method for creating accepts the same parameters as GET.
-    DELETE method will remove all sub_categories too.
+    # DELETE method will remove all sub_categories too.
 
     """
     queryset = Categories.objects.all()  # .filter(parent=None).order_by('id')

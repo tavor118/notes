@@ -1,4 +1,3 @@
-from django.core.urlresolvers import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, force_authenticate
 from django.contrib.auth.models import User
@@ -78,11 +77,6 @@ class NoteTest(APITestCase):
 
 class NoteDelegatedTest(APITestCase):
     pass
-    # def test_delete_note(self):
-    #     """
-    #     Authorized user can delete his note
-    #     """
-    #
     # def test_delegate_note(self):
     #     """
     #     Authorized user can delegate his note to another user

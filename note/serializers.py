@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from note.models import Note, Labels, Categories, Attachments, Colors
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
